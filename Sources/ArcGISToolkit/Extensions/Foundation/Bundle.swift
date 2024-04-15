@@ -14,11 +14,17 @@
 
 import Foundation
 
+private class BundleFinder {}
+
 extension Bundle {
     /// The identifier for the ArcGISToolkit module.
     static var toolkitIdentifier: String { "com.esri.ArcGISToolkit" }
-    
+
+    #if SWIFT_PACKAGE
     /// The toolkit module, which is either the resource bundle or the
     /// ArcGISToolkit framework, depending on how the toolkit was built.
     static let toolkitModule = Bundle(identifier: toolkitIdentifier) ?? .module
+    #else
+    static let toolkitModule = Bundle(for: BundleFinder.self).path(forResource: "ArcGISToolkitResources-2", ofType: "bundle").flatMap(Bundle.init(path:))
+    #endif
 }
